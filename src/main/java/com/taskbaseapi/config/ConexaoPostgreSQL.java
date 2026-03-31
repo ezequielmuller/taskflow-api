@@ -1,10 +1,10 @@
-package com.taskbaseapi.persistencia;
+package com.taskbaseapi.config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class Conexao {
+public class ConexaoPostgreSQL {
 
   private static final String URL = "jdbc:postgresql://localhost:5432/taskbaseapi";
   private static final String USUARIO = "postgres";
