@@ -23,6 +23,14 @@ public class UsuarioServlet extends BaseServlet {
     try {
       // se for /usuario/1 busca pelo id
       if (pathInfo != null && pathInfo.matches("/\\d+")) {
+
+        try {
+          validarToken(request);
+        } catch (Exception ex) {
+          retornarErro(response, HttpServletResponse.SC_UNAUTHORIZED, "Token inválido!");
+          return;
+        }
+
         Integer usuarioId = Integer.parseInt(pathInfo.substring(1));
         Usuario usuarioEncontrado = UsuarioDAO.getInstance().listarUsuarioPorId(usuarioId);
 
@@ -95,16 +103,24 @@ public class UsuarioServlet extends BaseServlet {
 
   protected void doPut(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
-    JSONObject json = lerBody(request);
 
     try {
+      validarToken(request);
+    } catch (Exception ex) {
+      retornarErro(response, HttpServletResponse.SC_UNAUTHORIZED, "Token inválido!");
+      return;
+    }
+
+    try {
+      JSONObject json = lerBody(request);
+
       if (request.getPathInfo() == null || !request.getPathInfo().matches("/\\d+")) {
         retornarErro(response, HttpServletResponse.SC_BAD_REQUEST, "ID inválido");
         return;
       }
 
       if (!json.has("nome") || json.isNull("nome")) {
-        retornarErro(response, HttpServletResponse.SC_BAD_REQUEST, "Nome obrigatórios!");
+        retornarErro(response, HttpServletResponse.SC_BAD_REQUEST, "Nome obrigatório!");
         return;
       }
 
@@ -114,16 +130,23 @@ public class UsuarioServlet extends BaseServlet {
       }
 
       if (!json.has("senha") || json.isNull("senha")) {
-        retornarErro(response, HttpServletResponse.SC_BAD_REQUEST, "Senha obrigatório!");
+        retornarErro(response, HttpServletResponse.SC_BAD_REQUEST, "Senha obrigatória!");
         return;
       }
 
       Integer usuarioId = Integer.parseInt(request.getPathInfo().substring(1));
-      Usuario usuarioEditado = new Usuario(usuarioId, json.getString("nome"), json.getString("email"), json.getString("senha"));
+
+      Usuario usuarioEditado = new Usuario(
+              usuarioId,
+              json.getString("nome"),
+              json.getString("email"),
+              json.getString("senha")
+      );
 
       usuarioEditado = UsuarioDAO.getInstance().editarUsuario(usuarioEditado);
 
       retorno(response, HttpServletResponse.SC_OK, new JSONObject(usuarioEditado));
+
     } catch (Exception ex) {
       retornarErro(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
     }
@@ -131,6 +154,13 @@ public class UsuarioServlet extends BaseServlet {
 
   protected void doDelete(HttpServletRequest request, HttpServletResponse response)
           throws ServletException, IOException {
+
+    try {
+      validarToken(request);
+    } catch (Exception ex) {
+      retornarErro(response, HttpServletResponse.SC_UNAUTHORIZED, "Token inválido!");
+      return;
+    }
 
     try {
       if (request.getPathInfo() == null || !request.getPathInfo().matches("/\\d+")) {
@@ -141,7 +171,7 @@ public class UsuarioServlet extends BaseServlet {
       Integer usuarioId = Integer.parseInt(request.getPathInfo().substring(1));
 
       boolean resposta = UsuarioDAO.getInstance().deletarUsuario(usuarioId);
-      if(resposta){
+      if (resposta) {
         retorno(response, HttpServletResponse.SC_NO_CONTENT, null);
       } else {
         retornarErro(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Não foi possivel deletar usuario!");

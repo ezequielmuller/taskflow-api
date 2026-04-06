@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class JwtUtil {
 
-  private static final String SECRET = "chave_token";
+  private static final String SECRET = "minha_chave_super_secreta_com_mais_de_32_caracteres_123";
   private static final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
   private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 3; // 3 horas

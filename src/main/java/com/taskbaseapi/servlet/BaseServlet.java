@@ -1,5 +1,6 @@
 package com.taskbaseapi.servlet;
 
+import com.taskbaseapi.security.JwtUtil;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -47,5 +48,17 @@ public abstract class BaseServlet extends HttpServlet {
     PrintWriter out = response.getWriter();
     out.print(resposta.toString());
     out.flush();
+  }
+
+  protected String validarToken(HttpServletRequest request) throws Exception {
+    String authHeader = request.getHeader("Authorization");
+
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+      throw new Exception("Token não fornecido");
+    }
+
+    String token = authHeader.substring(7); // remove "Bearer "
+
+    return JwtUtil.validarToken(token).getSubject();
   }
 }

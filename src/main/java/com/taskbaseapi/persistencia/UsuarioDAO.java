@@ -31,7 +31,7 @@ public class UsuarioDAO extends ConexaoPostgreSQL {
                   rs.getInt("usu_id"),
                   rs.getString("usu_nome"),
                   rs.getString("usu_email"),
-                  null //senha
+                  rs.getString("usu_senha")
           );
         } else {
           return null;

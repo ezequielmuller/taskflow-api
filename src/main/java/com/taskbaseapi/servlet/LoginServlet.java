@@ -35,7 +35,7 @@ public class LoginServlet extends BaseServlet {
 
       Usuario usuario = UsuarioDAO.getInstance().logarUsuario(json.getString("email"));
 
-      if (usuario == null || !BCrypt.checkpw(json.getString("senha"), usuario.getUsu_senha())) {
+      if (usuario == null || usuario.getUsu_senha() == null || !BCrypt.checkpw(json.getString("senha"), usuario.getUsu_senha())) {
         retornarErro(response, HttpServletResponse.SC_UNAUTHORIZED, "Credenciais inválidas");
         return;
       }
