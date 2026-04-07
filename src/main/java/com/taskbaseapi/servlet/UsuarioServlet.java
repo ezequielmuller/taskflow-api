@@ -72,28 +72,34 @@ public class UsuarioServlet extends BaseServlet {
     JSONObject json = lerBody(request);
 
     try {
-      if (!json.has("nome") || json.isNull("nome")) {
+      if (!json.has("usu_nome") || json.isNull("usu_nome")) {
         retornarErro(response, HttpServletResponse.SC_BAD_REQUEST, "Nome obrigatórios!");
         return;
       }
 
-      if (!json.has("email") || json.isNull("email")) {
+      if (!json.has("usu_email") || json.isNull("usu_email")) {
         retornarErro(response, HttpServletResponse.SC_BAD_REQUEST, "E-mail obrigatório!");
         return;
       }
 
-      if (!json.has("senha") || json.isNull("senha")) {
+      if (!json.has("usu_senha") || json.isNull("usu_senha")) {
         retornarErro(response, HttpServletResponse.SC_BAD_REQUEST, "Senha obrigatório!");
         return;
       }
 
-      Usuario novoUsuario = new Usuario(0, json.getString("nome"), json.getString("email"), json.getString("senha"));
+      Usuario novoUsuario = new Usuario(
+              0,
+              json.getString("usu_nome"),
+              json.getString("usu_email"),
+              json.getString("usu_senha")
+      );
+
       novoUsuario = UsuarioDAO.getInstance().gravarUsuario(novoUsuario);
 
       JSONObject obj = new JSONObject();
-      obj.put("id", novoUsuario.getUsu_id());
-      obj.put("nome", novoUsuario.getUsu_nome());
-      obj.put("email", novoUsuario.getUsu_email());
+      obj.put("usu_id", novoUsuario.getUsu_id());
+      obj.put("usu_nome", novoUsuario.getUsu_nome());
+      obj.put("usu_email", novoUsuario.getUsu_email());
 
       retorno(response, HttpServletResponse.SC_CREATED, obj);
     } catch (Exception ex) {
@@ -119,17 +125,17 @@ public class UsuarioServlet extends BaseServlet {
         return;
       }
 
-      if (!json.has("nome") || json.isNull("nome")) {
+      if (!json.has("usu_nome") || json.isNull("usu_nome")) {
         retornarErro(response, HttpServletResponse.SC_BAD_REQUEST, "Nome obrigatório!");
         return;
       }
 
-      if (!json.has("email") || json.isNull("email")) {
+      if (!json.has("usu_email") || json.isNull("usu_email")) {
         retornarErro(response, HttpServletResponse.SC_BAD_REQUEST, "E-mail obrigatório!");
         return;
       }
 
-      if (!json.has("senha") || json.isNull("senha")) {
+      if (!json.has("usu_senha") || json.isNull("usu_senha")) {
         retornarErro(response, HttpServletResponse.SC_BAD_REQUEST, "Senha obrigatória!");
         return;
       }
@@ -138,9 +144,9 @@ public class UsuarioServlet extends BaseServlet {
 
       Usuario usuarioEditado = new Usuario(
               usuarioId,
-              json.getString("nome"),
-              json.getString("email"),
-              json.getString("senha")
+              json.getString("usu_nome"),
+              json.getString("usu_email"),
+              json.getString("usu_senha")
       );
 
       usuarioEditado = UsuarioDAO.getInstance().editarUsuario(usuarioEditado);
